@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload ETL Script to S3
         run: |
-          aws s3 cp glue_job.py s3://finalyelp2012310/data1/glue_job.py
+          aws s3 cp glue_job.py s3://finalyelp2012310/scripts/glue_job.py
           echo "ETL script uploaded to S3."
 
       - name: Start Glue ETL Job
