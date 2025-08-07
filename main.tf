@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "etl_bucket" {
 }
 
 resource "aws_glue_catalog_database" "etl_db" {
-  name = "master12"
+  name = "maste03"
 }
 
 locals {
