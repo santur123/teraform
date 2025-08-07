@@ -79,7 +79,7 @@ final_df = final_df.withColumn("year", year("r_date")) \
 
 # Corrected output path to match the S3 location the crawler is configured to scan.
 # This path is derived from your main (1).tf and variables (1).tf files.
-output_path = "s3://yelp20031203/cleaned_data/"
+output_path = "s3://yelpdata20031203/cleaned_data/"
 
 if not output_path.strip():
     raise ValueError("Output path cannot be empty.")
