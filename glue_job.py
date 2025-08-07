@@ -16,19 +16,19 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
-# Load public data from S3 (replace with actual public paths if different)
+# Load public data from S3
 b_df = spark.read.parquet("s3://public-yelp-dataset/business/")
 r_df = spark.read.parquet("s3://public-yelp-dataset/review/")
 u_df = spark.read.parquet("s3://public-yelp-dataset/user/")
 
 # Rename columns
-b_df = b_df.withColumnRenamed("name", "b_name")\
-           .withColumnRenamed("stars", "b_stars")\
+b_df = b_df.withColumnRenamed("name", "b_name") \
+           .withColumnRenamed("stars", "b_stars") \
            .withColumnRenamed("review_count", "b_review_count")
 
-r_df = r_df.withColumnRenamed("cool", "r_cool")\
-           .withColumnRenamed("date", "r_date")\
-           .withColumnRenamed("useful", "r_useful")\
+r_df = r_df.withColumnRenamed("cool", "r_cool") \
+           .withColumnRenamed("date", "r_date") \
+           .withColumnRenamed("useful", "r_useful") \
            .withColumnRenamed("funny", "r_funny")
 
 # Join datasets
@@ -73,20 +73,18 @@ map_super_category_udf = udf(map_super_category, StringType())
 final_df = final_df.withColumn("super_category", map_super_category_udf(final_df["categories"]))
 
 # Extract year & month, drop unused columns
-final_df = final_df.withColumn("year", year("r_date"))\
-                   .withColumn("month", month("r_date"))\
+final_df = final_df.withColumn("year", year("r_date")) \
+                   .withColumn("month", month("r_date")) \
                    .drop("r_date", "categories")
 
-# Output path (your own S3)
-from datetime import datetime
-timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-output_path = f"s3://finalyelp2012310/yelpraw/{timestamp}/"
-
+# Corrected output path to match the S3 location the crawler is configured to scan.
+# This path is derived from your main (1).tf and variables (1).tf files.
+output_path = "s3://yelp20031203/cleaned_data/"
 
 if not output_path.strip():
     raise ValueError("Output path cannot be empty.")
 
-# Write to S3
+# Write the DataFrame to the corrected S3 path
 final_df.coalesce(1) \
        .write \
        .mode("overwrite") \
