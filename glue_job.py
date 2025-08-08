@@ -17,9 +17,9 @@ job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
 # Load public data from S3
-b_df = spark.read.parquet("s3://public-yelp-dataset/business/")
-r_df = spark.read.parquet("s3://public-yelp-dataset/review/")
-u_df = spark.read.parquet("s3://public-yelp-dataset/user/")
+b_df = spark.read.parquet("s3://yelp-project123/Parquet_data/business/")
+r_df = spark.read.parquet("s3://yelp-project123/Parquet_data/review/")
+u_df = spark.read.parquet("s3://yelp-project123/Parquet_data/user/")
 
 # Rename columns
 b_df = b_df.withColumnRenamed("name", "b_name") \
@@ -79,7 +79,7 @@ final_df = final_df.withColumn("year", year("r_date")) \
 
 # Corrected output path to match the S3 location the crawler is configured to scan.
 # This path is derived from your main (1).tf and variables (1).tf files.
-output_path = "s3://yelpdata20031203/cleaned_data/"
+output_path = "s3://data20031203/cleaned_data/"
 
 if not output_path.strip():
     raise ValueError("Output path cannot be empty.")
