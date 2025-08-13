@@ -4,7 +4,7 @@ from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
-from pyspark.sql.functions import udf, year, month
+from pyspark.sql.functions import udf, year, month, when, col
 from pyspark.sql.types import StringType
 
 # @params: [JOB_NAME]
@@ -77,10 +77,45 @@ final_df = final_df.withColumn("year", year("r_date")) \
                    .withColumn("month", month("r_date")) \
                    .drop("r_date", "categories")
 
-# Corrected output path to match the S3 location the crawler is configured to scan.
-# This path is derived from your main (1).tf and variables (1).tf files.
-output_path = "s3://data20031203/cleaned_data/"
+# ---- NEW: Show distinct states ----
+distinct_states = final_df.select("state").distinct()
+distinct_states.show(distinct_states.count(), truncate=False)
 
+# ---- NEW: Map state abbreviations to full names ----
+final_df = final_df.withColumn(
+    "state",
+    when(col("state") == "DE", "Delaware")
+    .when(col("state") == "MO", "Missouri")
+    .when(col("state") == "VI", "Virgin Islands")
+    .when(col("state") == "IL", "Illinois")
+    .when(col("state") == "SD", "South Dakota")
+    .when(col("state") == "UT", "Utah")
+    .when(col("state") == "HI", "Hawaii")
+    .when(col("state") == "CA", "California")
+    .when(col("state") == "NC", "North Carolina")
+    .when(col("state") == "AZ", "Arizona")
+    .when(col("state") == "LA", "Louisiana")
+    .when(col("state") == "NJ", "New Jersey")
+    .when(col("state") == "MT", "Montana")
+    .when(col("state") == "FL", "Florida")
+    .when(col("state") == "MI", "Michigan")
+    .when(col("state") == "NV", "Nevada")
+    .when(col("state") == "ID", "Idaho")
+    .when(col("state") == "VT", "Vermont")
+    .when(col("state") == "WA", "Washington")
+    .when(col("state") == "IN", "Indiana")
+    .when(col("state") == "TN", "Tennessee")
+    .when(col("state") == "TX", "Texas")
+    .when(col("state") == "CO", "Colorado")
+    .when(col("state") == "PA", "Pennsylvania")
+    .when(col("state") == "AB", "Alberta")
+    .when(col("state") == "MA", "Massachusetts")
+    .when(col("state") == "Unknown", "Mississippi")  # Placeholder for 'XMS'
+    .otherwise(col("state"))
+)
+
+# Output path
+output_path = "s3://projectyelp2025/cleaned_data/"
 if not output_path.strip():
     raise ValueError("Output path cannot be empty.")
 
