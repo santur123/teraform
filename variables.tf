@@ -5,21 +5,21 @@ variable "region" {
 
 # Declare the bucket name
 variable "bucket_name_prefix" {
-  default = "data20031203"
+  default = "projectyelp2025"
 }
 
 # Declare the Glue job name
 variable "glue_job_name" {
-  default = "yelpsdataglue12"
+  default = "yelpglue13"
 }
 
 # Declare the Glue crawler name
 variable "glue_crawler_name" {
-  default = "yelpdatacrawler2023"
+  default = "datacrawler1308"
 }
 
 # Declare the script path in S3
 variable "script_s3_path" {
-  default = "s3://data20031203/scripts/glue_job.py"
+  default = "s3://projectyelp2025/scripts/glue_job.py"
 }
 
